@@ -13,7 +13,10 @@ if Rack.release > '2'
       class Params < Rack::QueryParser::Params
         INDIFFERENT_PROC = lambda{|h,k| h[k.to_s] if k.is_a?(Symbol)}
 
-        def initialize(limit = Rack::Utils.key_space_limit)
+        KEY_SPACE_LIMIT =
+          Rack::Utils.method_defined?(:key_space_limit) ?  Rack::Utils.key_space_limit : 65536
+
+        def initialize(limit = KEY_SPACE_LIMIT)
           @limit  = limit
           @size   = 0
           @params = Hash.new(&INDIFFERENT_PROC)
