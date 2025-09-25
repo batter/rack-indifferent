@@ -9,7 +9,7 @@ if Rack.release > '2'
         return make_params.to_params_hash if qs.nil? || qs.empty?
         super
       end
-      
+
       class Params < Rack::QueryParser::Params
         INDIFFERENT_PROC = lambda{|h,k| h[k.to_s] if k.is_a?(Symbol)}
 
@@ -20,7 +20,11 @@ if Rack.release > '2'
         end
       end
 
-      Rack::Utils.default_query_parser = new(Params, 65536, 100)
+      if Rack::VERSION[0].to_i < 3
+        Rack::Utils.default_query_parser = new(Params, 65536, 100)
+      else
+        Rack::Utils.default_query_parser = new(Params, 65536)
+       end
     end
   end
 else
